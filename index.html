@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Grégoire Pineau" />
+  <meta name="dcterms.date" content="2015-10-06" />
+  <title>A la découverte de Twig</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css"/>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'reveal.js/css/print/pdf.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">A la découverte de Twig</h1>
+    <h2 class="author">Grégoire Pineau</h2>
+    <h3 class="date">2015-10-06</h3>
+</section>
+
+<section id="sommaire" class="slide level1">
+<h1>Sommaire</h1>
+<ol type="1">
+<li>Qu'est-ce que twig ?</li>
+<li>Comment sa marche ?</li>
+<li>Comment organiser ses templates ?</li>
+</ol>
+</section>
+<section id="quest-ce-que-twig" class="slide level1">
+<h1>Qu'est-ce que Twig?</h1>
+</section>
+<section class="slide level1">
+
+<section id="cest-ca" class="level2">
+<h2>C'est ca:</h2>
+<figure>
+<img src="assets/twig-logo.png" alt="Twig" /><figcaption>Twig</figcaption>
+</figure>
+</section>
+<section id="mais-cest-aussi" class="level2">
+<h2>Mais c'est aussi</h2>
+<ul>
+<li>Un moteur de template <a href="https://github.com/twigphp/Twig">open source</a></li>
+<li>2011-03-27: v1.0.0</li>
+<li>2015-10-06: v1.22.2</li>
+<li><strong>BC depuis la v1.0.0</strong></li>
+</ul>
+</section>
+<section id="que-beaucoup-de-monde-utilise" class="level2">
+<h2>Que beaucoup de monde utilise</h2>
+<ul>
+<li>Symfony</li>
+<li>Drupal</li>
+<li>eZ Publish</li>
+<li>Sylius</li>
+<li>phpBB</li>
+</ul>
+</section>
+<section id="car-cest-bien" class="level2">
+<h2>Car c'est bien !</h2>
+<ul>
+<li>syntaxe simple et claire</li>
+<li>auto-escaping</li>
+<li>erreurs facile à debugger</li>
+<li>très fléxible</li>
+</ul>
+</section>
+</section>
+<section id="comment-ca-marche" class="slide level1">
+<h1>Comment ca marche?</h1>
+</section>
+<section class="slide level1">
+
+<section id="installation" class="level2">
+<h2>Installation</h2>
+<pre><code>composer require twig/twig:^1.0</code></pre>
+</section>
+<section id="configuration" class="level2">
+<h2>Configuration</h2>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">require</span> <span class="kw">__DIR__</span>.<span class="st">&#39;/vendor/autoload.php&#39;</span><span class="ot">;</span>
+
+<span class="kw">$loader</span> = <span class="kw">new</span> Twig_Loader_Filesystem<span class="ot">([</span><span class="kw">__DIR__</span>.<span class="st">&#39;/templates&#39;</span><span class="ot">]);</span>
+
+<span class="kw">$twig</span> = <span class="kw">new</span> Twig_Environment<span class="ot">(</span><span class="kw">$loader</span><span class="ot">);</span></code></pre></div>
+</section>
+<section id="utilisation" class="level2">
+<h2>Utilisation</h2>
+<p>Template</p>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">{# hello.html.twig ; ceci est un commentaire #}
+
+{% if &#39;gr&#39; in name %}&quot;gr&quot; est bien dans &quot;<span class="dv">{{</span><span class="ot"> name </span><span class="dv">}}</span>&quot;{% endif %}
+
+{% for i in [1, 2, 5, 10] %}
+    i vaut {{ i }}
+{% endfor %}</code></pre></div>
+<p>PHP</p>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="fu">echo</span> <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;hello.html.twig&#39;</span><span class="ot">,</span> <span class="ot">[</span><span class="st">&#39;name&#39;</span> =&gt; <span class="st">&#39;greg&#39;</span><span class="ot">]);</span></code></pre></div>
+<p>Résultat</p>
+<pre><code>&quot;gr&quot; est bien dans &quot;greg&quot;
+    i vaut 1
+    i vaut 2
+    i vaut 5
+    i vaut 10
+</code></pre>
+</section>
+</section>
+<section id="auto-escaping" class="slide level1">
+<h1>Auto escaping</h1>
+</section>
+<section class="slide level1">
+
+<section id="build-in" class="level2">
+<h2>Build-in</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">hello <span class="dv">{{</span><span class="ot"> name </span><span class="dv">}}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="fu">echo</span> <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;index.html.twig&#39;</span><span class="ot">,</span> <span class="ot">[</span>
+    <span class="st">&#39;name&#39;</span> =&gt; <span class="st">&#39;&lt;script&gt;alert(&quot;coucou&quot;)&lt;/script&gt;&#39;</span><span class="ot">,</span>
+<span class="ot">]);</span></code></pre></div>
+<pre><code>hello &amp;lt;script&amp;gt;alert(&amp;quot;coucou&amp;quot;)&amp;lt;/script&amp;gt;</code></pre>
+</section>
+<section id="mais-débrayable" class="level2">
+<h2>Mais débrayable:</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki"><span class="dv">{{</span><span class="ot"> user.username</span><span class="dv">|</span>raw <span class="dv">}}</span>
+<span class="dv">{{</span><span class="ot"> user.username</span><span class="dv">|</span>e(&#39;js&#39;) <span class="dv">}}</span>
+<span class="dv">{{</span><span class="ot"> user.username</span><span class="dv">|</span>e(&#39;css&#39;) <span class="dv">}}</span>
+<span class="dv">{{</span><span class="ot"> user.username</span><span class="dv">|</span>e(&#39;url&#39;) <span class="dv">}}</span>
+<span class="dv">{{</span><span class="ot"> user.username</span><span class="dv">|</span>e(&#39;html_attr&#39;) <span class="dv">}}</span></code></pre></div>
+</section>
+</section>
+<section id="gestion-des-erreurs" class="slide level1">
+<h1>Gestion des erreurs</h1>
+</section>
+<section class="slide level1">
+
+<section id="undefined-vars" class="level2">
+<h2>Undefined vars</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">hello <span class="dv">{{</span><span class="ot"> name </span><span class="dv">}}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">try</span> {
+    <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;var.html.twig&#39;</span><span class="ot">,</span> <span class="fu">array</span><span class="ot">(</span><span class="st">&#39;prénom&#39;</span> =&gt; <span class="st">&#39;greg&#39;</span><span class="ot">));</span>
+} <span class="kw">catch</span> <span class="ot">(</span>\<span class="kw">Exception</span> <span class="kw">$e</span><span class="ot">)</span> {
+    <span class="fu">echo</span> <span class="kw">$e</span>-&gt;getMessage<span class="ot">();</span>
+}</code></pre></div>
+<pre><code>Twig_Error_Runtime: Variable &quot;name&quot; does not exist in &quot;vars.html.twig&quot;
+at line 1</code></pre>
+</section>
+<section id="undefined-functions" class="level2">
+<h2>Undefined functions</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">rand: <span class="dv">{{</span><span class="ot"> rand() </span><span class="dv">}}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">try</span> {
+    <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;funct.html.twig&#39;</span><span class="ot">);</span>
+} <span class="kw">catch</span> <span class="ot">(</span>\<span class="kw">Exception</span> <span class="kw">$e</span><span class="ot">)</span> {
+    <span class="fu">echo</span> <span class="kw">$e</span>-&gt;getMessage<span class="ot">();</span>
+}</code></pre></div>
+<pre><code>The function &quot;rand&quot; does not exist. Did you mean &quot;random&quot; in &quot;funct.html.twig&quot;
+at line 1</code></pre>
+</section>
+</section>
+<section id="tools" class="slide level1">
+<h1>Tools</h1>
+</section>
+<section class="slide level1">
+
+<section id="extensible" class="level2">
+<h2>Extensible</h2>
+<p>Vous pouvez ajouter <strong>facilement</strong> des:</p>
+<p><code>macro</code>, <code>global</code>, <code>function</code>, <code>filter</code>, <code>test</code>, <code>operator</code></p>
+<p>et plus difficilement des:</p>
+<p><code>tag</code></p>
+</section>
+<section id="suffle" class="level2">
+<h2>Suffle</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki"><span class="dv">{{</span><span class="ot"> word</span><span class="dv">|</span>shuffle <span class="dv">}}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">class</span> SuffleExtension <span class="kw">extends</span> Twig_Extension
+{
+    <span class="kw">public</span> <span class="kw">function</span> getFilters<span class="ot">()</span>
+    {
+        <span class="kw">return</span> <span class="ot">[</span>
+            <span class="kw">new</span> Twig_SimpleFilter<span class="ot">(</span><span class="st">&#39;shuffle&#39;</span><span class="ot">,</span> <span class="st">&#39;str_shuffle&#39;</span><span class="ot">),</span>
+        <span class="ot">];</span>
+    }
+
+    <span class="kw">public</span> <span class="kw">function</span> getName<span class="ot">()</span>
+    {
+        <span class="kw">return</span> <span class="st">&#39;shuffle&#39;</span><span class="ot">;</span>
+    }
+}
+
+<span class="kw">$twig</span>-&gt;addExtension<span class="ot">(</span><span class="kw">new</span> SuffleExtension<span class="ot">());</span>
+
+<span class="fu">echo</span> <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;shuffle.html.twig&#39;</span><span class="ot">,</span> <span class="fu">array</span><span class="ot">(</span><span class="st">&#39;word&#39;</span> =&gt; <span class="st">&#39;shuffle&#39;</span><span class="ot">));</span></code></pre></div>
+<pre><code>lsuffhe</code></pre>
+</section>
+<section id="built-in-profiler" class="level2">
+<h2>Built-in profiler</h2>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">$profile</span> = <span class="kw">new</span> Twig_Profiler_Profile<span class="ot">();</span>
+<span class="kw">$twig</span>-&gt;addExtension<span class="ot">(</span><span class="kw">new</span> Twig_Extension_Profiler<span class="ot">(</span><span class="kw">$profile</span><span class="ot">));</span>
+
+<span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;homepage.html.twig&#39;</span><span class="ot">,</span> <span class="ot">[</span>
+    <span class="st">&#39;name&#39;</span> =&gt; <span class="st">&#39;greg&#39;</span><span class="ot">,</span>
+<span class="ot">]);</span>
+
+<span class="co">// $dumper = new Twig_Profiler_Dumper_Blackfire();</span>
+<span class="kw">$dumper</span> = <span class="kw">new</span> Twig_Profiler_Dumper_Text<span class="ot">();</span>
+<span class="fu">echo</span> <span class="kw">$dumper</span>-&gt;dump<span class="ot">(</span><span class="kw">$profile</span><span class="ot">);</span></code></pre></div>
+<pre><code>main 1.94ms/100%
+└ homepage.html.twig 1.94ms/100%
+  └ qui-sommes-nous.html.twig
+</code></pre>
+</section>
+</section>
+<section id="comment-organiser-ses-templates" class="slide level1">
+<h1>Comment organiser ses templates ?</h1>
+</section>
+<section class="slide level1">
+
+<section id="extends" class="level2">
+<h2>Extends</h2>
+<p>Pourquoi ? Quand ?</p>
+</section>
+<section id="extends---layout" class="level2">
+<h2>Extends - Layout</h2>
+<figure>
+<img src="assets/extends-empty.png" alt="" />
+</figure>
+</section>
+<section id="extends---homepage" class="level2">
+<h2>Extends - Homepage</h2>
+<figure>
+<img src="assets/extends-full.png" alt="" />
+</figure>
+</section>
+<section id="extends---layout---code" class="level2">
+<h2>Extends - Layout - Code</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">{# layout.html.twig #}
+
+<span class="kw">&lt;html&gt;</span>
+    &lt;head&gt;
+        &lt;title&gt;{% block title &#39;&#39; %}&lt;/title&gt;
+        {% block meta &#39;&#39; %}
+        {% block css %}
+            &lt;style type=&quot;text/css&quot; src=&quot;/css/styles.css&quot;&gt;&lt;/style&gt;
+        {% endblock %}
+    &lt;/head&gt;
+    &lt;body&gt;
+        Navigation
+        Fil d&#39;arianne
+        {% block body &#39;&#39; %}
+        {% block javascripts &#39;&#39; %}
+    &lt;/body&gt;
+<span class="kw">&lt;/html&gt;</span></code></pre></div>
+</section>
+<section id="extends---homepage---code" class="level2">
+<h2>Extends - Homepage - Code</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">{# homepage.html.twig #}
+
+{% extends &#39;layout.html.twig&#39; %}
+
+{% block title &#39;Ma page&#39; %}
+
+{% block css %}
+    {{ parent() }}
+    &lt;style type=&quot;text/css&quot; src=&quot;/css/homepage.css&quot;&gt;&lt;/style&gt;
+{% endblock %}
+
+{% block body %}
+    Coverflow
+
+    Boutons
+{% endblock %}</code></pre></div>
+</section>
+<section id="résultat" class="level2">
+<h2>Résultat</h2>
+<div class="sourceCode"><pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;html&gt;</span>
+    <span class="kw">&lt;head&gt;</span>
+        <span class="kw">&lt;title&gt;</span>Ma page<span class="kw">&lt;/title&gt;</span>
+        <span class="kw">&lt;style</span><span class="ot"> type=</span><span class="st">&quot;text/css&quot;</span><span class="ot"> src=</span><span class="st">&quot;/css/styles.css&quot;</span><span class="kw">&gt;&lt;/style&gt;</span>
+        <span class="kw">&lt;style</span><span class="ot"> type=</span><span class="st">&quot;text/css&quot;</span><span class="ot"> src=</span><span class="st">&quot;/css/homepage.css&quot;</span><span class="kw">&gt;&lt;/style&gt;</span>
+    <span class="kw">&lt;/head&gt;</span>
+    <span class="kw">&lt;body&gt;</span>
+        Navigation
+        Fil d&#39;arrianne
+        Coverflow
+        Boutons
+    <span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></code></pre></div>
+</section>
+</section>
+<section class="slide level1">
+
+<section id="include" class="level2">
+<h2>Include</h2>
+<p>Pourquoi ? Quand ?</p>
+</section>
+<section id="include-statique-1" class="level2">
+<h2>Include statique #1</h2>
+<figure>
+<img src="assets/include-static.png" alt="" />
+</figure>
+</section>
+<section id="include-statique-2" class="level2">
+<h2>Include statique #2</h2>
+<pre><code>{# qui-sommes-nous.html.twig #}
+
+&lt;div&gt;
+    Qui sommes nous ?
+&lt;/div&gt;</code></pre>
+<p>::</p>
+<pre><code>{# homepage.html.twig #}
+
+&lt;div&gt;
+    New
+&lt;/div&gt;
+
+&lt;div&gt;
+    Derniers Commentaires
+&lt;/div&gt;
+
+{{ include(&#39;qui-sommes-nous.html.twig&#39;) }}</code></pre>
+</section>
+<section id="include-dynamique-1" class="level2">
+<h2>Include dynamique #1</h2>
+<figure>
+<img src="assets/include-dynamic.png" alt="" />
+</figure>
+</section>
+<section id="include-dynamique-2" class="level2">
+<h2>Include dynamique #2</h2>
+<pre><code>{# news.html.twig #}
+
+{% for post in posts %}
+    {{ include(&#39;post.html.twig&#39;, { post: post }, with_context = false) }}
+{% endfor %}</code></pre>
+<p>::</p>
+<pre><code>{# post.html.twig #}
+
+&lt;div&gt;
+    &lt;h3&gt;{{ post.title}}&lt;/h3&gt;
+    &lt;div&gt;{{ post.content }}&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</section>
+<section id="include-1" class="level2">
+<h2>Include</h2>
+<ul>
+<li>Re-utilisation de code HTML</li>
+<li>Découpage fonctionnel (header / footer)</li>
+<li>Dynamique</li>
+<li>Structure HTML non flexible</li>
+<li><strong>Ne passer pas des flags pour ajouter de la flexibilité</strong></li>
+</ul>
+</section>
+<section id="tips" class="level2">
+<h2>Tips</h2>
+<ul>
+<li>N'utiliser plus le tag, mais la fonction</li>
+<li><strong>Pensez à isoler vos include</strong></li>
+</ul>
+</section>
+</section>
+<section class="slide level1">
+
+<section id="use" class="level2">
+<h2>Use</h2>
+<p>Pourquoi ? Quand ?</p>
+</section>
+<section id="use-1" class="level2">
+<h2>Use #1</h2>
+<figure>
+<img src="assets/use-static.png" alt="" />
+</figure>
+</section>
+<section id="use-2" class="level2">
+<h2>Use #2</h2>
+<pre><code>{# blocks.html.twig #}
+
+{% block qui_sommes_nous %}
+    &lt;div&gt;
+        Qui sommes nous ?
+    &lt;/div&gt;
+{% endblock %}</code></pre>
+<p>::</p>
+<pre><code>{# homepage.html.twig #}
+
+{# ... #}
+
+{% use &quot;blocks.html.twig&quot; %}
+
+{{ block(&#39;qui_sommes_nous&#39;) }}
+
+{# OU #}
+
+{% block qui_sommes_nous %}
+    &lt;div class=&quot;container&quot;&gt;
+        {{ parent() }}
+    &lt;/div&gt;
+{% endblock %}</code></pre>
+</section>
+<section id="use-3" class="level2">
+<h2>Use</h2>
+<ul>
+<li>Ré-utilisation de code HTML</li>
+<li>Découpage fonctionnel (header / footer)</li>
+<li>Non dynamique</li>
+<li>Structure HTML non flexible</li>
+<li>Permet de partager plusieurs morceaux d'HTML dans le même fichier</li>
+<li>=&gt; Peu utilisé</li>
+</ul>
+</section>
+</section>
+<section class="slide level1">
+
+<section id="embed" class="level2">
+<h2>Embed</h2>
+<p>Pourquoi ? Quand ?</p>
+</section>
+<section id="embed-1" class="level2">
+<h2>Embed #1</h2>
+<figure>
+<img src="assets/embed-list.png" alt="" />
+</figure>
+</section>
+<section id="embed-2" class="level2">
+<h2>Embed #2</h2>
+<figure>
+<img src="assets/embed-home.png" alt="" />
+</figure>
+</section>
+<section id="embed---liste" class="level2">
+<h2>Embed - liste</h2>
+<pre><code>{# news.html.twig #}
+
+{% for post in posts %}
+    {% embed &quot;post.html.twig&quot; with { post: post } only %}{% endembed %}
+{% endfor %}</code></pre>
+</section>
+<section id="embed---post" class="level2">
+<h2>Embed - Post</h2>
+<pre><code>{# post.html.twig #}
+
+&lt;div&gt;
+    {% block title %}&lt;h3&gt;{{ post.title}}&lt;/h3&gt;{% endblock %}
+
+    {% block content%}&lt;div&gt;{{ post.content }}&lt;/div&gt;{% endblock %}
+
+    {% block metas %}
+        &lt;p&gt;Par {{ post.author }} le {{ post.date }}&lt;/p&gt;
+    {% endblock %}
+
+    {% block comments %}
+        &lt;p&gt;il y a {{ post.comment|length }} commentaires&lt;/p&gt;
+    {% endblock %}
+&lt;/div&gt;</code></pre>
+</section>
+<section id="embed---home" class="level2">
+<h2>Embed - home</h2>
+<pre><code>{# homepage.html.twig #}
+
+&lt;div&gt;
+    {% embed &quot;embed/post.html.twig&quot; with { post: posts|last } only %}
+
+        {% block title %}
+            &lt;h1&gt;{{ post.title}}&lt;/h1&gt;
+        {% endblock %}
+
+        {% block comments %}
+            {{ parent() }}&lt;p&gt;Lire les commentaire&lt;/p&gt;
+        {% endblock %}
+
+    {% endembed %}
+&lt;/div&gt;
+
+&lt;div&gt;
+    Derniers Commentaires
+&lt;/div&gt;
+
+{{ include(&#39;include/qui-sommes-nous.html.twig&#39;) }}</code></pre>
+</section>
+<section id="embed-3" class="level2">
+<h2>Embed</h2>
+<ul>
+<li>Ré-utilisation de code HTML</li>
+<li>Découpage fonctionnel (header / footer)</li>
+<li>Dynamique</li>
+<li><strong>Flexible</strong></li>
+</ul>
+</section>
+<section id="embed---tips" class="level2">
+<h2>Embed - Tips</h2>
+<ul>
+<li>Ajouter autant de blocks que possible</li>
+<li><strong>Pensez à isoler vos embed</strong></li>
+</ul>
+</section>
+</section>
+<section class="slide level1">
+
+<section id="macros" class="level2">
+<h2>Macros</h2>
+<p>Pourquoi ? Quand ?</p>
+</section>
+<section id="macros---code" class="level2">
+<h2>Macros - Code</h2>
+<pre><code>{% macro input(name, type = &#39;text&#39;, value = &#39;&#39;,  size = &#39;20&#39;) %}
+    {% spaceless %}
+        &lt;input type=&quot;{{ type }}&quot; name=&quot;{{ name }}&quot; value=&quot;{{ value|e }}&quot;
+            size=&quot;{{ size }}&quot; /&gt;
+    {% endspaceless %}
+{% endmacro %}
+
+{% import _self as forms %}
+{# ou #}
+{% import &#39;forms.html.twig&#39; as forms %}
+
+{{ forms.input(&#39;user&#39;) }}
+{{ forms.input(&#39;email&#39;, &#39;email&#39;) }}</code></pre>
+</section>
+<section id="macros-1" class="level2">
+<h2>Macros</h2>
+<ul>
+<li>Génération de code HTML</li>
+<li>Dynamique</li>
+<li>Flexible</li>
+</ul>
+</section>
+</section>
+<section class="slide level1">
+
+<section id="include-use-embed-macro" class="level2">
+<h2>Include / Use / Embed / Macro</h2>
+<p>Vous voulez:</p>
+<ul>
+<li>Génerer du code HTML dynamiquement : <strong>macros</strong></li>
+<li>Découper votre template en (sous) templates (fonctionnel) : <strong>include</strong></li>
+<li>Mutualiser du code HTML entre plusieurs templates : <strong>include</strong></li>
+<li>Mutualiser et customiser du code HTML entre plusieurs templates : <strong>embed</strong></li>
+</ul>
+</section>
+</section>
+<section id="merci-des-questions" class="slide level1">
+<h1>Merci ! Des questions ?</h1>
+</section>
+<section class="slide level1">
+
+<p>Les slides:</p>
+<ul>
+<li><a href="https://github.com/lyrixx/Afup-Paris-2015-Twig/" class="uri">https://github.com/lyrixx/Afup-Paris-2015-Twig/</a></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p>Sinon:</p>
+<ul>
+<li><a href="http://github.com/lyrixx" class="uri">http://github.com/lyrixx</a></li>
+<li><a href="http://twitter.com/lyrixx" class="uri">http://twitter.com/lyrixx</a></li>
+</ul>
+</section>
+<section class="slide level1">
+
+<p>Et:</p>
+<ul>
+<li><a href="http://sensiolabs.com/fr/nous_rejoindre/pourquoi_nous_rejoindre.html">SensioLabs Recrute</a></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,         // Display controls in the bottom right corner
+        progress: false,         // Display a presentation progress bar
+        history: true,          // Push each slide change to the browser history
+        center: true,                       // Vertical centering of slides
+        maxScale: 1.5,                  // Bounds for smallest/largest possible content scale
+        slideNumber: true,                // Display the page number of the current slide
+        theme: 'simple', // available themes are in /css/theme
+        transition: 'slide', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+]});
+    </script>
+    </body>
+</html>
