@@ -8,6 +8,6 @@
         }
     ],
     "require": {
-        "twig/twig": "~1.12"
+        "twig/twig": "^1.0"
     }
 }

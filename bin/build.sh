@@ -16,5 +16,3 @@ pandoc \
     --output $BASE/index.html \
     --highlight-style tango \
     $BASE/slides.md
-
-    # --variable maxScale=2 \

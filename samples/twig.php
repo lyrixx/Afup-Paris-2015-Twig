@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 
 require __DIR__.'/vendor/autoload.php';
 
-$templatesDir = sprintf('%s/templates/%s', __DIR__, basename($_SERVER["SCRIPT_NAME"], '.php'));
+$templatesDir = sprintf('%s/templates/%s', __DIR__, basename($_SERVER['SCRIPT_NAME'], '.php'));
 
 if (!is_dir($templatesDir)) {
     echo "The template dir \"$templatesDir\" does not exist\n";
@@ -15,4 +15,6 @@ if (!is_dir($templatesDir)) {
 
 $loader = new Twig_Loader_Filesystem(array($templatesDir));
 
-$twig = new Twig_Environment($loader);
+$twig = new Twig_Environment($loader, [
+    'strict_variables' => true,
+]);

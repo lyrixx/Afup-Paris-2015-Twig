@@ -17,4 +17,3 @@ echo "\n\n";
 echo "News\n";
 echo "----\n";
 echo $twig->render('news.html.twig', array('posts' => $posts));
-

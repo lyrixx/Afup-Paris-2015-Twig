@@ -1,55 +1,252 @@
-# Comment organiser ses templates twig ?
+% A la découverte de Twig
+% Grégoire Pineau
+% 2015-10-06
 
-Grégoire Pineau - Symfony Live - Paris 2013
+------------------
 
-![](assets/twig-logo.png)
+# Sommaire
 
-#
+1. Qu'est-ce que twig ?
+1. Comment sa marche ?
+1. Comment organiser ses templates ?
 
-## Sommaire
+------------------
 
-1. Organisation des templates
-2. Mise en place de thème
+# Qu'est-ce que Twig?
 
-#
+------------------
 
-## Twig
+## C'est ca:
+
+![Twig](assets/twig-logo.png)
+
+
+## Mais c'est aussi
+
+* Un moteur de template [open source](https://github.com/twigphp/Twig)
+* 2011-03-27: v1.0.0
+* 2015-10-06: v1.22.2
+* **BC depuis la v1.0.0**
+
+## Que beaucoup de monde utilise
+
+* Symfony
+* Drupal
+* eZ Publish
+* Sylius
+* phpBB
+
+## Car c'est bien !
+
+* syntaxe simple et claire
+* auto-escaping
+* erreurs facile à debugger
+* très fléxible
+
+------------------
+
+# Comment ca marche?
+
+------------------
 
 ## Installation
 
-    php composer.phar require twig/twig:~1.12
+```
+composer require twig/twig:^1.0
+```
 
 ## Configuration
 
-    // twig.php
+```php
+require __DIR__.'/vendor/autoload.php';
 
-    require __DIR__.'/vendor/autoload.php';
+$loader = new Twig_Loader_Filesystem([__DIR__.'/templates']);
 
-    $loader = new Twig_Loader_Filesystem(array(__DIR__.'/templates'));
+$twig = new Twig_Environment($loader);
+```
 
-    $twig = new Twig_Environment($loader);
+## Utilisation
 
-## utilisation
+Template
 
-Template:
+```mediawiki
+{# hello.html.twig ; ceci est un commentaire #}
 
-    {# hello.html.twig #}
+{% if 'gr' in name %}"gr" est bien dans "{{ name }}"{% endif %}
 
-    hello {{ name }}
+{% for i in [1, 2, 5, 10] %}
+    i vaut {{ i }}
+{% endfor %}
+```
 
-Php:
+PHP
 
-    // hello.php
+```php
+echo $twig->render('hello.html.twig', ['name' => 'greg']);
+```
 
-    require __DIR__.'/twig.php';
+Résultat
 
-    echo $twig->render('hello.html.twig', array('name' => 'greg'));
+```
+"gr" est bien dans "greg"
+    i vaut 1
+    i vaut 2
+    i vaut 5
+    i vaut 10
 
-Résultat:
+```
 
-    hello greg
+------------------
 
-#
+# Auto escaping
+
+------------------
+
+## Build-in
+
+```mediawiki
+hello {{ name }}
+```
+
+```php
+echo $twig->render('index.html.twig', [
+    'name' => '<script>alert("coucou")</script>',
+]);
+```
+
+```
+hello &lt;script&gt;alert(&quot;coucou&quot;)&lt;/script&gt;
+```
+
+## Mais débrayable:
+
+```mediawiki
+{{ user.username|raw }}
+{{ user.username|e('js') }}
+{{ user.username|e('css') }}
+{{ user.username|e('url') }}
+{{ user.username|e('html_attr') }}
+```
+
+------------------
+
+# Gestion des erreurs
+
+------------------
+
+## Undefined vars
+
+```mediawiki
+hello {{ name }}
+```
+
+```php
+try {
+    $twig->render('var.html.twig', array('prénom' => 'greg'));
+} catch (\Exception $e) {
+    echo $e->getMessage();
+}
+
+```
+
+```
+Twig_Error_Runtime: Variable "name" does not exist in "vars.html.twig"
+at line 1
+```
+
+## Undefined functions
+
+```mediawiki
+rand: {{ rand() }}
+```
+
+```php
+try {
+    $twig->render('funct.html.twig');
+} catch (\Exception $e) {
+    echo $e->getMessage();
+}
+```
+
+```
+The function "rand" does not exist. Did you mean "random" in "funct.html.twig"
+at line 1
+```
+
+------------------
+
+# Tools
+
+------------------
+
+## Extensible
+
+Vous pouvez ajouter **facilement** des:
+
+`macro`, `global`, `function`, `filter`, `test`, `operator`
+
+et plus difficilement des:
+
+`tag`
+
+## Suffle
+
+```mediawiki
+{{ word|shuffle }}
+```
+
+```php
+class SuffleExtension extends Twig_Extension
+{
+    public function getFilters()
+    {
+        return [
+            new Twig_SimpleFilter('shuffle', 'str_shuffle'),
+        ];
+    }
+
+    public function getName()
+    {
+        return 'shuffle';
+    }
+}
+
+$twig->addExtension(new SuffleExtension());
+
+echo $twig->render('shuffle.html.twig', array('word' => 'shuffle'));
+```
+
+```
+lsuffhe
+```
+
+## Built-in profiler
+
+```php
+$profile = new Twig_Profiler_Profile();
+$twig->addExtension(new Twig_Extension_Profiler($profile));
+
+$twig->render('homepage.html.twig', [
+    'name' => 'greg',
+]);
+
+// $dumper = new Twig_Profiler_Dumper_Blackfire();
+$dumper = new Twig_Profiler_Dumper_Text();
+echo $dumper->dump($profile);
+```
+
+```
+main 1.94ms/100%
+└ homepage.html.twig 1.94ms/100%
+  └ qui-sommes-nous.html.twig
+
+```
+
+------------------
+
+# Comment organiser ses templates ?
+
+------------------
 
 ## Extends
 
@@ -63,62 +260,68 @@ Pourquoi ? Quand ?
 
 ![](assets/extends-full.png)
 
-## Extends - Layout #2
+## Extends - Layout - Code
 
-    {# layout.html.twig #}
+```mediawiki
+{# layout.html.twig #}
 
-    <html>
-        <head>
-            <title>{% block title '' %}</title>
-            {% block meta '' %}
-            {% block css %}
-                <style type="text/css" src="/css/styles.css"></style>
-            {% endblock %}
-        </head>
-        <body>
-            Navigation
-            Fil d'arianne
-            {% block body '' %}
-            {% block javascripts '' %}
-        </body>
-    </html>
+<html>
+    <head>
+        <title>{% block title '' %}</title>
+        {% block meta '' %}
+        {% block css %}
+            <style type="text/css" src="/css/styles.css"></style>
+        {% endblock %}
+    </head>
+    <body>
+        Navigation
+        Fil d'arianne
+        {% block body '' %}
+        {% block javascripts '' %}
+    </body>
+</html>
+```
 
-## Extends - Homepage #2
+## Extends - Homepage - Code
 
-    {# homepage.html.twig #}
+```mediawiki
+{# homepage.html.twig #}
 
-    {% extends 'layout.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-    {% block title 'Ma page' %}
+{% block title 'Ma page' %}
 
-    {% block css %}
-        {{ parent() }}
-        <style type="text/css" src="/css/homepage.css"></style>
-    {% endblock %}
+{% block css %}
+    {{ parent() }}
+    <style type="text/css" src="/css/homepage.css"></style>
+{% endblock %}
 
-    {% block body %}
-        Coverflow
+{% block body %}
+    Coverflow
 
-        Boutons
-    {% endblock %}
+    Boutons
+{% endblock %}
+```
 
 ## Résultat
 
-    <html>
-        <head>
-            <title>Ma page</title>
-            <style type="text/css" src="/css/styles.css"></style>
-            <style type="text/css" src="/css/homepage.css"></style>
-        </head>
-        <body>
-            Navigation
-            Fil d'arrianne
-            Coverflow
-            Boutons
-        </body>
-    </html>
+```html
+<html>
+    <head>
+        <title>Ma page</title>
+        <style type="text/css" src="/css/styles.css"></style>
+        <style type="text/css" src="/css/homepage.css"></style>
+    </head>
+    <body>
+        Navigation
+        Fil d'arrianne
+        Coverflow
+        Boutons
+    </body>
+</html>
+```
 
-#
+------------------
 
 ## Include
 
@@ -130,25 +333,29 @@ Pourquoi ? Quand ?
 
 ## Include statique #2
 
-    {# qui-sommes-nous.html.twig #}
+```
+{# qui-sommes-nous.html.twig #}
 
-    <div>
-        Qui sommes nous ?
-    </div>
+<div>
+    Qui sommes nous ?
+</div>
+```
 
 ::
 
-    {# homepage.html.twig #}
+```
+{# homepage.html.twig #}
 
-    <div>
-        New
-    </div>
+<div>
+    New
+</div>
 
-    <div>
-        Derniers Commentaires
-    </div>
+<div>
+    Derniers Commentaires
+</div>
 
-    {{ include('qui-sommes-nous.html.twig') }}
+{{ include('qui-sommes-nous.html.twig') }}
+```
 
 ## Include dynamique #1
 
@@ -156,20 +363,24 @@ Pourquoi ? Quand ?
 
 ## Include dynamique #2
 
-    {# news.html.twig #}
+```
+{# news.html.twig #}
 
-    {% for post in posts %}
-        {{ include('post.html.twig', { post: post }, with_context = false) }}
-    {% endfor %}
+{% for post in posts %}
+    {{ include('post.html.twig', { post: post }, with_context = false) }}
+{% endfor %}
+```
 
 ::
 
-    {# post.html.twig #}
+```
+{# post.html.twig #}
 
-    <div>
-        <h3>{{ post.title}}</h3>
-        <div>{{ post.content }}</div>
-    </div>
+<div>
+    <h3>{{ post.title}}</h3>
+    <div>{{ post.content }}</div>
+</div>
+```
 
 ## Include
 
@@ -184,7 +395,7 @@ Pourquoi ? Quand ?
 * N'utiliser plus le tag, mais la fonction
 * **Pensez à isoler vos include**
 
-#
+------------------
 
 ## Use
 
@@ -196,31 +407,35 @@ Pourquoi ? Quand ?
 
 ## Use #2
 
-    {# blocks.html.twig #}
+```
+{# blocks.html.twig #}
 
-    {% block qui_sommes_nous %}
-        <div>
-            Qui sommes nous ?
-        </div>
-    {% endblock %}
+{% block qui_sommes_nous %}
+    <div>
+        Qui sommes nous ?
+    </div>
+{% endblock %}
+```
 
 ::
 
-    {# homepage.html.twig #}
+```
+{# homepage.html.twig #}
 
-    {# ... #}
+{# ... #}
 
-    {% use "blocks.html.twig" %}
+{% use "blocks.html.twig" %}
 
-    {{ block('qui_sommes_nous') }}
+{{ block('qui_sommes_nous') }}
 
-    {# OU #}
+{# OU #}
 
-    {% block qui_sommes_nous %}
-        <div class="container">
-            {{ parent() }}
-        </div>
-    {% endblock %}
+{% block qui_sommes_nous %}
+    <div class="container">
+        {{ parent() }}
+    </div>
+{% endblock %}
+```
 
 ## Use
 
@@ -231,7 +446,7 @@ Pourquoi ? Quand ?
 * Permet de partager plusieurs morceaux d'HTML dans le même fichier
 * => Peu utilisé
 
-#
+------------------
 
 ## Embed
 
@@ -247,53 +462,59 @@ Pourquoi ? Quand ?
 
 ## Embed - liste
 
-    {# news.html.twig #}
+```
+{# news.html.twig #}
 
-    {% for post in posts %}
-        {% embed "post.html.twig" with { post: post } only %}{% endembed %}
-    {% endfor %}
+{% for post in posts %}
+    {% embed "post.html.twig" with { post: post } only %}{% endembed %}
+{% endfor %}
+```
 
 ## Embed - Post
 
-    {# post.html.twig #}
+```
+{# post.html.twig #}
 
-    <div>
-        {% block title %}<h3>{{ post.title}}</h3>{% endblock %}
+<div>
+    {% block title %}<h3>{{ post.title}}</h3>{% endblock %}
 
-        {% block content%}<div>{{ post.content }}</div>{% endblock %}
+    {% block content%}<div>{{ post.content }}</div>{% endblock %}
 
-        {% block metas %}
-            <p>Par {{ post.author }} le {{ post.date }}</p>
-        {% endblock %}
+    {% block metas %}
+        <p>Par {{ post.author }} le {{ post.date }}</p>
+    {% endblock %}
 
-        {% block comments %}
-            <p>il y a {{ post.comment|length }} commentaires</p>
-        {% endblock %}
-    </div>
+    {% block comments %}
+        <p>il y a {{ post.comment|length }} commentaires</p>
+    {% endblock %}
+</div>
+```
 
 ## Embed - home
 
-    {# homepage.html.twig #}
+```
+{# homepage.html.twig #}
 
-    <div>
-        {% embed "embed/post.html.twig" with { post: posts|last } only %}
+<div>
+    {% embed "embed/post.html.twig" with { post: posts|last } only %}
 
-            {% block title %}
-                <h1>{{ post.title}}</h1>
-            {% endblock %}
+        {% block title %}
+            <h1>{{ post.title}}</h1>
+        {% endblock %}
 
-            {% block comments %}
-                {{ parent() }}<p>Lire les commentaire</p>
-            {% endblock %}
+        {% block comments %}
+            {{ parent() }}<p>Lire les commentaire</p>
+        {% endblock %}
 
-        {% endembed %}
-    </div>
+    {% endembed %}
+</div>
 
-    <div>
-        Derniers Commentaires
-    </div>
+<div>
+    Derniers Commentaires
+</div>
 
-    {{ include('include/qui-sommes-nous.html.twig') }}
+{{ include('include/qui-sommes-nous.html.twig') }}
+```
 
 ## Embed
 
@@ -307,27 +528,29 @@ Pourquoi ? Quand ?
 * Ajouter autant de blocks que possible
 * **Pensez à isoler vos embed**
 
-#
+------------------
 
 ## Macros
 
 Pourquoi ? Quand ?
 
-## Macros #1
+## Macros - Code
 
-    {% macro input(name, type = 'text', value = '',  size = '20') %}
-        {% spaceless %}
-            <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}"
-                size="{{ size }}" />
-        {% endspaceless %}
-    {% endmacro %}
+```
+{% macro input(name, type = 'text', value = '',  size = '20') %}
+    {% spaceless %}
+        <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}"
+            size="{{ size }}" />
+    {% endspaceless %}
+{% endmacro %}
 
-    {% import _self as forms %}
-    {# ou #}
-    {% import 'forms.html.twig' as forms %}
+{% import _self as forms %}
+{# ou #}
+{% import 'forms.html.twig' as forms %}
 
-    {{ forms.input('user') }}
-    {{ forms.input('email', 'email') }}
+{{ forms.input('user') }}
+{{ forms.input('email', 'email') }}
+```
 
 ## Macros
 
@@ -335,7 +558,7 @@ Pourquoi ? Quand ?
 * Dynamique
 * Flexible
 
-#
+------------------
 
 ## Include / Use / Embed / Macro
 
@@ -346,346 +569,11 @@ Vous voulez:
 * Mutualiser du code HTML entre plusieurs templates : **include**
 * Mutualiser et customiser du code HTML entre plusieurs templates : **embed**
 
-Note:
+------------------
 
-Les fonctions twig ne sont pas faites pour générer du HTML ; Il en sera question un peu plus loin
+# Merci ! Des questions ?
 
-#
-
-## Theming
-
-Comment construire un systeme de thème ?
-
-**Use case**:
-
-* Création de plusieurs sites avec un design approchant ("presque" semblable)
-* Création d'un CMS / blog open source
-* Sites en marque blanche
-
-## Architecture
-
-    themes
-    ├── default
-    │   ├── footer.html.twig
-    │   ├── header.html.twig
-    │   ├── homepage.html.twig
-    │   └── layout.html.twig
-    └── my_theme
-        └── header.html.twig
-
-## Thème par défaut / layout
-
-    {# default/layout.html.twig #}
-
-    <html>
-        <head>
-            <title>{% block title '' %}</title>
-        </head>
-        <body>
-            {{ include('logo.html.twig') }}
-
-            {% block content '' %}
-
-        </body>
-    </html>
-
-## Thème par défaut / templates
-
-    {# default/homepage.html.twig #}
-
-    {% extends 'layout.html.twig' %}
-
-    {% block content %}
-        Du contenu
-    {% endblock %}
-
-::
-
-    {# default/logo.html.twig #}
-
-    <img src="logo.png">
-
-
-## Mon thème / Remplacement
-
-    {# my_theme/logo.html.twig #}
-
-    <h1>Mon site</h1>
-    <img src="mon-logo.png">
-
-## Résultat
-
-    <html>
-        <head>
-            <title></title>
-        </head>
-        <body>
-            <h1>Mon site</h1>
-            <img src="mon-logo.png">
-
-            Du contenu
-        </body>
-    </html>
-
-## Comment ça marche ?
-
-    require __DIR__.'/vendor/autoload.php';
-
-    $loader = new Twig_Loader_Filesystem(array(
-        __DIR__.'/templates/theming/my_theme',
-        __DIR__.'/templates/theming/default',
-    ));
-
-    $twig = new Twig_Environment($loader);
-
-    echo $twig->render('homepage.html.twig'); // <--- /!\ Attention
-
-## Comment étendre la template de base ? #1
-
-    themes
-    ├── default
-    │   ├── footer.html.twig
-    │   ├── header.html.twig
-    │   ├── homepage.html.twig
-    │   └── layout.html.twig
-    └── my_theme
-        ├── homepage.html.twig
-        └── header.html.twig
-
-## Comment étendre la template de base ? #2
-
-    {# my_theme/homepage.html.twig #}
-
-    {% extends 'default/homepage.html.twig' %}
-
-    {% block content %}
-        <div class="container">
-            {{ parent() }}
-        </div>
-    {% endblock %}
-
-## Comment étendre la template de base ? #3
-
-Il faut ajouter le répertoire commun aux deux dossiers de thème :
-
-    require __DIR__.'/vendor/autoload.php';
-
-    $loader = new Twig_Loader_Filesystem(array(
-        __DIR__.'/templates/theming/my_theme',
-        __DIR__.'/templates/theming/default',
-        __DIR__.'/templates/theming',          // <---- HERE
-    ));
-
-    $twig = new Twig_Environment($loader);
-
-    echo $twig->render('homepage.html.twig');
-
-## Remarque
-
-Mais pourquoi Wordpress n'utilise pas twig pour ses templates ??????????????????
-
-#
-
-## Block Theming #1
-
-Comment personaliser l'affichage des fonctions twig ?
-
-**Use case**:
-
-* Fil d'arianne
-* Menu contextuel
-* Embed de flash player
-* Slider
-* Pagination
-
-----
-
-*Note*: Ici un `include` / `embed` ne peut pas suffir, car il y a
-potentiellement des besoins métiers (appel à la BDD, ...) qui ne peuvent /
-doivent pas etre fait depuis une template.
-
-## Block Theming #2
-
-    {# layout.html.twig #}
-
-    {{ display_menu(page|default(null)) }}
-
-::
-
-    <!-- Résultat -->
-
-    <nav>
-        <ul>
-            <li><a href="#">A</a></li>
-            <li><a href="#">B</a></li>
-            <li><a href="#">C</a></li>
-        </ul>
-    </nav>
-
-## Block Theming #2
-
-* `display_menu` est une fonction twig qui va générer du contenu HTML.
-
-* Nous voulons un support pour `display_menu`, `display_flash`,
-  `display_pagination`,   `display_slider`, `display_*`
-
----
-
-* Pour ajouter ces fonctions à twig, Nous allons:
-
-    1. Créer une extension twig
-    1. Créer une template contenant les blocks `menu`, `flash`,
-        `pagination`, `slider`,  ...
-    1. Utiliser les fonctions `display_*`
-
-## Block Theming - Mise en place de l'extension #1
-
-    class DisplayExtension extends \Twig_Extension
-    {
-        private $themes;
-
-        public function __construct(array $themes = array())
-        {
-            $this->themes = $themes;
-        }
-    }
-
-## Block Theming - Mise en place de l'extension #2
-
-    public function getFunctions()
-    {
-        return array(
-            new \Twig_SimpleFunction(
-                'display_menu',
-                array($this, 'displayBlock'),
-                array('needs_environment' => true, 'is_safe' => array('html'))
-            ),
-        );
-    }
-
-## Block Theming - Mise en place de l'extension #3
-
-    public function displayBlock(\Twig_Environment $env, $block = 'menu', $parameters = array())
-    {
-        foreach ($this->themes as $theme) {
-            if ($theme instanceof \Twig_Template) {
-                $template = $theme;
-            } else {
-                $template = $env->loadTemplate($theme);
-            }
-            if ($template->hasBlock($block)) {
-                return $template->renderBlock($block, $parameters);
-            }
-        }
-
-        throw new \InvalidArgumentException('Unable to find block '.$block);
-    }
-
-**Attention**: Ici on utilise une partie de l'API de twig qui n'est pas publique *
-
-## Block Theming - Mise en place de l'extension #4
-
-    $twig->addExtension(new DisplayExtension(array('display.html.twig')));
-
-## Block Theming - Création d'un thème par default
-
-    {# display.html.twig ; Notre template de blocks #}
-
-    {% block menu %}
-    {% spaceless %}
-        <nav>
-            <ul>
-                <li><a href="#">A</a></li>
-                <li><a href="#">B</a></li>
-                <li><a href="#">C</a></li>
-            </ul>
-        </nav>
-    {% endspaceless %}
-    {% endblock %}
-
-    {% block pagination %}
-    {# ... #}
-
-    {% block slider %}
-    {# ... #}
-
-    {% block flash %}
-    {# ... #}
-
-## Block Theming - Mise en place de l'extension - Refacto #1
-
-    public function getFunctions()
-    {
-        return array(
-            new \Twig_SimpleFunction(
-                'display_menu',
-                array($this, 'displayMenu'),
-                array('needs_environment' => true, 'is_safe' => array('html'))
-            ),
-            new \Twig_SimpleFunction(
-                'display_*',
-                array($this, 'displayBlock'),
-                array('needs_environment' => true, 'is_safe' => array('html'))
-            ),
-        );
-    }
-
-## Block Theming - Mise en place de l'extension - Refacto #2
-
-    public function displayMenu(\Twig_Environment $env, $page = null)
-    {
-        // Do what you need HERE.
-
-        return $this->displayBlock($env, 'menu', array('page' => $page));
-    }
-
-## Block Theming - Création d'un tag pour changer le thème
-
-Il faut ajouter un tag, qui va ajouter **à la compilation** un nouveau thème
-pour la template courante.
-
-Le code est un peu compliqué, mais il sera dans le dépôt ;)
-
-## Block Theming - Création d'un tag pour changer le thème #2
-
-    {# page.html.twig #}
-
-    {% extends 'layout.html.twig' %}
-
-    {% display_theme _self %}
-
-    {% block menu %}
-        <h6>Menu:</h6>
-
-        <nav class="class4">
-            <ul class="class5">
-                <li><a href="#">A</a></li>
-                <li><a href="#">B</a></li>
-                <li><a href="#">C</a></li>
-            </ul>
-        </nav>
-    {% endblock %}
-
-    {{ display_menu(page|default(null)) }}
-
-## Block Theming - Création d'un tag pour changer le thème #3
-
-    <!-- Résultat -->
-    <h6>Menu:</h6>
-
-    <nav class="class4">
-        <ul class="class5">
-            <li><a href="#">A</a></li>
-            <li><a href="#">B</a></li>
-            <li><a href="#">C</a></li>
-        </ul>
-    </nav>
-
-#
-
-## Merci ! Des questions ?
-
-#
+------------------
 
 Les slides:
 

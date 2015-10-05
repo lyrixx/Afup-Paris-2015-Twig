@@ -1,1 +1,7 @@
-hello {{ name }}
+{# hello.html.twig ; ceci est un commentaire #}
+
+{% if 'gr' in name %}"gr" est bien dans "{{ name }}"{% endif %}
+
+{% for i in [1, 2, 5, 10] %}
+    i vaut {{ i }}
+{% endfor %}
