@@ -577,15 +577,14 @@ Vous voulez:
 
 Les slides:
 
-* [https://github.com/lyrixx/SFLive-Paris2013-Twig](https://github.com/lyrixx/SFLive-Paris2013-Twig)
+* [https://github.com/lyrixx/Afup-Paris-2015-Twig/](https://github.com/lyrixx/Afup-Paris-2015-Twig/)
 
 ---
 
 Sinon:
 
-* [http://twitter.com/lyrixx](http://twitter.com/lyrixx)
 * [http://github.com/lyrixx](http://github.com/lyrixx)
-* [http://blog.lyrixx.info](http://blog.lyrixx.info)
+* [http://twitter.com/lyrixx](http://twitter.com/lyrixx)
 
 ---
 
