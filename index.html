@@ -73,11 +73,19 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
     <h3 class="date">2015-10-06</h3>
 </section>
 
+<section class="slide level1">
+
+<p><strong>Grégoire Pineau</strong></p>
+<p>DevOps @ Blackfire.io</p>
+<figure>
+<img src="assets/blackfire.png" alt="" />
+</figure>
+</section>
 <section id="sommaire" class="slide level1">
 <h1>Sommaire</h1>
 <ol type="1">
 <li>Qu'est-ce que twig ?</li>
-<li>Comment sa marche ?</li>
+<li>Comment ça marche ?</li>
 <li>Comment organiser ses templates ?</li>
 </ol>
 </section>
@@ -121,8 +129,8 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 </section>
 </section>
-<section id="comment-ca-marche" class="slide level1">
-<h1>Comment ca marche?</h1>
+<section id="comment-ça-marche" class="slide level1">
+<h1>Comment ça marche?</h1>
 </section>
 <section class="slide level1">
 
@@ -157,6 +165,16 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
     i vaut 5
     i vaut 10
 </code></pre>
+</section>
+<section id="variables" class="level2">
+<h2>Variables</h2>
+<p>Twig traite les objets et les tableaux de la meme facon:</p>
+<pre><code>{{ user.name }}</code></pre>
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">$user</span><span class="ot">[</span><span class="st">&#39;name&#39;</span><span class="ot">];</span>
+
+<span class="kw">$user</span>-&gt;name<span class="ot">;</span>
+<span class="kw">$user</span>-&gt;name<span class="ot">();</span>
+<span class="kw">$user</span>-&gt;getName<span class="ot">();</span></code></pre></div>
 </section>
 <section id="filtres-functions" class="level2">
 <h2>Filtres / Functions</h2>
@@ -601,6 +619,28 @@ at line 1</code></pre>
 <li>Découper votre template en (sous) templates (fonctionnel) : <strong>include</strong></li>
 <li>Mutualiser du code HTML entre plusieurs templates : <strong>include</strong></li>
 <li>Mutualiser et customiser du code HTML entre plusieurs templates : <strong>embed</strong></li>
+</ul>
+</section>
+</section>
+<section id="on-ne-parlera-pas" class="slide level1">
+<h1>On ne parlera pas</h1>
+</section>
+<section class="slide level1">
+
+<section id="enfin-juste-sur-cette-slide" class="level2">
+<h2>Enfin, juste sur cette slide</h2>
+<ul>
+<li>des arguments nommés</li>
+<li>de mode sandbox</li>
+<li>du lexer / parser / compiler</li>
+<li>des nodes traverseur</li>
+<li>de l'optimiseur de code</li>
+<li>des fonctions/filter wildcard (<code>title_*</code>)</li>
+<li>des namespaces</li>
+<li>des audits de sécurité</li>
+<li>que c'est du twig, donc pas de PHP dans la vue</li>
+<li>de l'extension en C pour de meilleur perf</li>
+<li><strong>des autres moteurs de templates</strong></li>
 </ul>
 </section>
 </section>
