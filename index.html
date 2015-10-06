@@ -155,6 +155,8 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
 
 {% for i in [1, 2, 5, 10] %}
     i vaut {{ i }}
+{% else %}
+    il n&#39;y a pas d&#39;élement dans la liste
 {% endfor %}</code></pre></div>
 <p>PHP</p>
 <div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="fu">echo</span> <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;hello.html.twig&#39;</span><span class="ot">,</span> <span class="ot">[</span><span class="st">&#39;name&#39;</span> =&gt; <span class="st">&#39;greg&#39;</span><span class="ot">]);</span></code></pre></div>
@@ -186,6 +188,7 @@ Filtres:
 <span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>lower <span class="dv">}}</span> {# my first car #}
 <span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>title <span class="dv">}}</span> {# My First Car #}
 <span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>capitalize <span class="dv">}}</span> {# My first car #}
+<span class="dv">{{</span><span class="ot"> another_var</span><span class="dv">|</span>default(&#39;default value&#39;) <span class="dv">}}</span> {# default value #}
 
 Fonctions:
 
