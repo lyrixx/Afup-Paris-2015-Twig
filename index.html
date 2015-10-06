@@ -158,6 +158,21 @@ code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Inf
     i vaut 10
 </code></pre>
 </section>
+<section id="filtres-functions" class="level2">
+<h2>Filtres / Functions</h2>
+<div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki">{% set var = &#39;my first car&#39; %}
+
+Filtres:
+
+<span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>upper <span class="dv">}}</span> {# MY FIRST CAR #}
+<span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>lower <span class="dv">}}</span> {# my first car #}
+<span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>title <span class="dv">}}</span> {# My First Car #}
+<span class="dv">{{</span><span class="ot"> var</span><span class="dv">|</span>capitalize <span class="dv">}}</span> {# My first car #}
+
+Fonctions:
+
+<span class="dv">{{</span><span class="ot"> date(&#39;yesterday 12:00&#39;)</span><span class="dv">|</span>date(&#39;c&#39;) <span class="dv">}}</span> {# 2015-10-05T12:00:00+02:00 #}</code></pre></div>
+</section>
 </section>
 <section id="auto-escaping" class="slide level1">
 <h1>Auto escaping</h1>
