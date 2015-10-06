@@ -1,0 +1,8 @@
+{% set var = 'my first car' %}
+
+{{ var|upper }} {# MY FIRST CAR #}
+{{ var|lower }} {# my first car #}
+{{ var|title }} {# My First Car #}
+{{ var|capitalize }} {# My first car #}
+
+{{ date('yesterday 12:00')|date('c') }} {# 2015-10-05T12:00:00+02:00 #}

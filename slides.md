@@ -4,10 +4,18 @@
 
 ------------------
 
+**Grégoire Pineau**
+
+DevOps @ Blackfire.io
+
+![](assets/blackfire.png)
+
+------------------
+
 # Sommaire
 
 1. Qu'est-ce que twig ?
-1. Comment sa marche ?
+1. Comment ça marche ?
 1. Comment organiser ses templates ?
 
 ------------------
@@ -45,7 +53,7 @@
 
 ------------------
 
-# Comment ca marche?
+# Comment ça marche?
 
 ------------------
 
@@ -93,6 +101,41 @@ Résultat
     i vaut 2
     i vaut 5
     i vaut 10
+
+```
+
+## Variables
+
+Twig traite les objets et les tableaux de la meme facon:
+
+```
+{{ user.name }}
+```
+
+```php
+$user['name'];
+
+$user->name;
+$user->name();
+$user->getName();
+```
+
+## Filtres / Functions
+
+
+```mediawiki
+{% set var = 'my first car' %}
+
+Filtres:
+
+{{ var|upper }} {# MY FIRST CAR #}
+{{ var|lower }} {# my first car #}
+{{ var|title }} {# My First Car #}
+{{ var|capitalize }} {# My first car #}
+
+Fonctions:
+
+{{ date('yesterday 12:00')|date('c') }} {# 2015-10-05T12:00:00+02:00 #}
 
 ```
 
@@ -568,6 +611,26 @@ Vous voulez:
 * Découper votre template en (sous) templates (fonctionnel) : **include**
 * Mutualiser du code HTML entre plusieurs templates : **include**
 * Mutualiser et customiser du code HTML entre plusieurs templates : **embed**
+
+------------------
+
+# On ne parlera pas
+
+------------------
+
+## Enfin, juste sur cette slide
+
+* des arguments nommés
+* de mode sandbox
+* du lexer / parser / compiler
+* des nodes traverseur
+* de l'optimiseur de code
+* des fonctions/filter wildcard (`title_*`)
+* des namespaces
+* des audits de sécurité
+* que c'est du twig, donc pas de PHP dans la vue
+* de l'extension en C pour de meilleur perf
+* **des autres moteurs de templates**
 
 ------------------
 

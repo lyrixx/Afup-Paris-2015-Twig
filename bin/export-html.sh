@@ -4,7 +4,7 @@ BASE_PATH=`dirname $0`/..
 
 $BASE_PATH/bin/build.sh
 
-rm -rf $BASE_PATH/build
+rm -rf $BASE_PATH/build/*
 mkdir -p $BASE_PATH/build
 
 cp -r $BASE_PATH/index.html $BASE_PATH/assets/ $BASE_PATH/reveal.js/ $BASE_PATH/build
