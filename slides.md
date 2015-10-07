@@ -235,14 +235,14 @@ et plus difficilement des:
 
 `tag`
 
-## Suffle
+## Shuffle
 
 ```mediawiki
 {{ word|shuffle }}
 ```
 
 ```php
-class SuffleExtension extends Twig_Extension
+class ShuffleExtension extends Twig_Extension
 {
     public function getFilters()
     {
@@ -257,7 +257,7 @@ class SuffleExtension extends Twig_Extension
     }
 }
 
-$twig->addExtension(new SuffleExtension());
+$twig->addExtension(new ShuffleExtension());
 
 echo $twig->render('shuffle.html.twig', array('word' => 'shuffle'));
 ```
