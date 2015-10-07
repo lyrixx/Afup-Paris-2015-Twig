@@ -257,10 +257,10 @@ at line 1</code></pre>
 <p>et plus difficilement des:</p>
 <p><code>tag</code></p>
 </section>
-<section id="suffle" class="level2">
-<h2>Suffle</h2>
+<section id="shuffle" class="level2">
+<h2>Shuffle</h2>
 <div class="sourceCode"><pre class="sourceCode mediawiki"><code class="sourceCode mediawiki"><span class="dv">{{</span><span class="ot"> word</span><span class="dv">|</span>shuffle <span class="dv">}}</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">class</span> SuffleExtension <span class="kw">extends</span> Twig_Extension
+<div class="sourceCode"><pre class="sourceCode php"><code class="sourceCode php"><span class="kw">class</span> ShuffleExtension <span class="kw">extends</span> Twig_Extension
 {
     <span class="kw">public</span> <span class="kw">function</span> getFilters<span class="ot">()</span>
     {
@@ -275,7 +275,7 @@ at line 1</code></pre>
     }
 }
 
-<span class="kw">$twig</span>-&gt;addExtension<span class="ot">(</span><span class="kw">new</span> SuffleExtension<span class="ot">());</span>
+<span class="kw">$twig</span>-&gt;addExtension<span class="ot">(</span><span class="kw">new</span> ShuffleExtension<span class="ot">());</span>
 
 <span class="fu">echo</span> <span class="kw">$twig</span>-&gt;render<span class="ot">(</span><span class="st">&#39;shuffle.html.twig&#39;</span><span class="ot">,</span> <span class="fu">array</span><span class="ot">(</span><span class="st">&#39;word&#39;</span> =&gt; <span class="st">&#39;shuffle&#39;</span><span class="ot">));</span></code></pre></div>
 <pre><code>lsuffhe</code></pre>
