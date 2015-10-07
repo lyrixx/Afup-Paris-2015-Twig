@@ -84,6 +84,8 @@ Template
 
 {% for i in [1, 2, 5, 10] %}
     i vaut {{ i }}
+{% else %}
+    il n'y a pas d'élement dans la liste
 {% endfor %}
 ```
 
@@ -132,6 +134,7 @@ Filtres:
 {{ var|lower }} {# my first car #}
 {{ var|title }} {# My First Car #}
 {{ var|capitalize }} {# My first car #}
+{{ another_var|default('default value') }} {# default value #}
 
 Fonctions:
 
@@ -653,4 +656,4 @@ Sinon:
 
 Et:
 
-* [SensioLabs Recrute](http://sensiolabs.com/fr/nous_rejoindre/pourquoi_nous_rejoindre.html)
+* [SensioLabs Recrute](http://sensiolabs.com/fr/nous_rejoindre/nous_rejoindre.html)
